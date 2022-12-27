@@ -7,8 +7,8 @@ tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tabler
                    ,[0,0,1,1,2,1,0,0]   #En 1,2,3 y 4 se desplaza el personaje
                    ,[0,0,1,0,1,0,5,0]   #En 2,3,4 se encuentran los bloques movibles
                    ,[0,1,1,0,1,0,5,0]
-                   ,[0,1,0,1,1,4,5,0]
-                   ,[0,1,3,1,1,1,1,0]
+                   ,[0,1,0,1,1,2,5,0]
+                   ,[0,1,2,1,1,1,1,0]
                    ,[0,0,0,0,0,0,0,0]])
 
 #MÚSICA
@@ -135,26 +135,52 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 x_speed = -60
+                izquierda = True
+                #if tablero[y][x]==2:
+                #    tablero[y][x]=1
+                #    tablero[y][x-1]=2
+
             if event.key == pygame.K_RIGHT:
                 x_speed =60
+                derecha = True
+                #if tablero[y][x]==2:
+                #    tablero[y][x]=1
+                #    tablero[y][x+1]=2
+
             if event.key == pygame.K_UP:
                 y_speed = -60
+                arriba = True
+                #if tablero[y][x]==2:
+                #    tablero[y][x]=1
+                #    tablero[y-1][x]=2
+
             if event.key == pygame.K_DOWN:
                 y_speed = 60
+                abajo = True
+                #if tablero[y][x]==2:
+                #    tablero[y][x]=1
+                #    tablero[y+1][x]=2
+ 
             
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 x_speed = 0
+                izquierda = False
             if event.key == pygame.K_RIGHT:
                 x_speed = 0
+                derecha = False
             if event.key == pygame.K_UP:
                 y_speed = 0
+                arriba = False
             if event.key == pygame.K_DOWN:
                 y_speed = 0
+                abajo = False
 
 
     #Color de fondo
     screen.blit(background,[-10,-10])
+    mapaJuego()
+    bloqueMovible()
     #Para mover personaje-CONVERTIRLO EN UNA FUNCIÓN[1]
     if (165<=cord_x and cord_x<=585)and(65<=cord_y and cord_y<=485):
         cord_x += x_speed
@@ -163,22 +189,64 @@ while True:
         y = int((cord_y-65)/60)
         print(x,y) #Para ver coordenada de la M.Bidimensional
         if tablero[y][x]>=1:
+            print(tablero)
+            #bloqueMovible()
             screen.blit(personaje,[cord_x,cord_y,50,50])
+            if tablero[y][x]==2:
+                screen.blit(personaje,[cord_x,cord_y,50,50])
+                if izquierda == True:
+                    tablero[y][x]=1
+                    tablero[y][x-1]=2
+                elif derecha == True:
+                    tablero[y][x]=1
+                    tablero[y][x+1]=2
+                elif abajo == True:
+                    tablero[y][x]=1
+                    tablero[y+1][x]=2
+                elif arriba == True:
+                    tablero[y][x]=1
+                    tablero[y-1][x]=2
+        #elif izquierda == True:
+            #if tablero[y][x]==2:
+            #    tablero[y][x-1]=2
+                #screen.blit(bloque_Mov,[cord_x-60,cord_y,50,50])
+            #else:
+            #    tablero[y][x]==2
+                #cord_x -= x_speed
+                #cord_y -= y_speed
+                #screen.blit(bloque_Mov,[cord_x,cord_y,50,50])
+               
         else:
             cord_x -= x_speed
             cord_y -= y_speed
+            print(tablero)
+            #bloqueMovible()
             screen.blit(personaje,[cord_x,cord_y,50,50])
             #Colocando sonido, cuando el personaje choque en el muro
             #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
             #pygame.mixer.music.play()
             
-            
-            
-
-    mapaJuego() #Llamamos función del mapa
+                       
+    #mapaJuego() #Llamamos función del mapa
     #mov_personaje(cord_x,cord_y,x_speed,y_speed)
     #Bloques movibles
-    bloqueMovible()
+    #if tablero[y][x]==2:
+    #    if izquierda == True:
+    #        tablero[y][x]=1
+    #        tablero[y][x-1]=2
+    #    elif derecha == True:
+    #        tablero[y][x]=1
+    #        tablero[y][x+1]=2
+    #    elif abajo == True:
+    #        tablero[y][x]=1
+    #        tablero[y+1][x]=2
+    #    elif arriba == True:
+    #        tablero[y][x]=1
+    #        tablero[y-1][x]=2
+    
+
+        
+    #bloqueMovible()
     #Diamantes
     diamante()
     #Actualizar pantalla
