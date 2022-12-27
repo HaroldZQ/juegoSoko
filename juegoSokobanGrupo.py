@@ -5,9 +5,9 @@ pygame.init()
 tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tablero[0][0]
                    ,[0,0,0,0,1,1,0,0]   #En 0 se encuentran las cajas
                    ,[0,0,1,1,2,1,0,0]   #En 1,2,3 y 4 se desplaza el personaje
-                   ,[0,0,1,0,1,0,1,0]   #En 2,3,4 se encuentran los bloques movibles
-                   ,[0,1,1,0,1,0,1,0]
-                   ,[0,1,0,1,1,4,1,0]
+                   ,[0,0,1,0,1,0,5,0]   #En 2,3,4 se encuentran los bloques movibles
+                   ,[0,1,1,0,1,0,5,0]
+                   ,[0,1,0,1,1,4,5,0]
                    ,[0,1,3,1,1,1,1,0]
                    ,[0,0,0,0,0,0,0,0]])
 
@@ -49,6 +49,8 @@ background = pygame.image.load("Imagenes/fotoFondo.jpg").convert()
 #Imagenes de elementos del juego
 bloque = pygame.image.load("Imagenes/Ladrillo.jpeg")
 personaje = pygame.image.load("Imagenes/Personaje1.jpeg")
+bloque_Mov = pygame.image.load("Imagenes/LadrilloMovible.png")
+Diamante = pygame.image.load("Imagenes/Diamante.jpeg")
 #Icono y titulo para la ventana(Esquina superior)
 pygame.display.set_icon(personaje)
 pygame.display.set_caption("Sokoban")
@@ -56,6 +58,8 @@ pygame.display.set_caption("Sokoban")
 #Imagenes de elementos del juego transformadas a deternida escala
 bloque = pygame.transform.scale(bloque, (50,50))
 personaje = pygame.transform.scale(personaje, (50,50))
+bloque_Mov = pygame.transform.scale(bloque_Mov, (50,50))
+Diamante = pygame.transform.scale(Diamante, (50,50))
 #-----------------------------------------------------
 
 #VARIABLES
@@ -103,8 +107,25 @@ def mov_personaje(cordx,cordy,xspeed,yspeed):
             cordx -= xspeed
             cordy -= yspeed
             screen.blit(personaje,[cordx,cordy,50,50])
+
+#Función para los bloques movibles
+def bloqueMovible():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]>=2 and tablero[y][x]<=4: #tablero[fila][columna]
+                x_1 = 165+60*x
+                y_1 = 65+60*y
+                screen.blit(bloque_Mov,[x_1,y_1,50,50])
 #------------------------------------------------------    
 
+#Función para los bloques movibles
+def diamante():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]==5: #tablero[fila][columna]
+                x_1 = 165+60*x
+                y_1 = 65+60*y
+                screen.blit(Diamante,[x_1,y_1,50,50])
 #REALIZA JUEGO-BULCE INFINITO
 while True:
     for event in pygame.event.get():
@@ -147,7 +168,7 @@ while True:
             cord_x -= x_speed
             cord_y -= y_speed
             screen.blit(personaje,[cord_x,cord_y,50,50])
-            #Colcocando sonido, cuando el personaje choque en el muro
+            #Colocando sonido, cuando el personaje choque en el muro
             #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
             #pygame.mixer.music.play()
             
@@ -156,7 +177,10 @@ while True:
 
     mapaJuego() #Llamamos función del mapa
     #mov_personaje(cord_x,cord_y,x_speed,y_speed)
-
+    #Bloques movibles
+    bloqueMovible()
+    #Diamantes
+    diamante()
     #Actualizar pantalla
     pygame.display.flip()
     
