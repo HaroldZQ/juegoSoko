@@ -170,14 +170,12 @@ while True:
     #Color de fondo
     screen.blit(background,[-10,-10])
     
-    #mapaJuego() 
+    mapaJuego() 
     #bloqueMovible()
     #Para mover personaje-CONVERTIRLO EN UNA FUNCIÓN[1]
     if (165<=cord_x and cord_x<=585)and(65<=cord_y and cord_y<=485):
         cord_x += x_speed
         cord_y += y_speed
-        #cordC_x += x_speed
-        #cordC_y += y_speed
         x = int((cord_x-165)/60)
         y = int((cord_y-65)/60)
         print(x,y) #Para ver coordenada de la M.Bidimensional
@@ -185,20 +183,21 @@ while True:
             print(tablero)
             screen.blit(personaje,[cord_x,cord_y,50,50])
             if tablero[y][x]==2:
-                cordC_x += x_speed #Izquierda->cordC_x=405-60
-                cordC_y += y_speed #Izquierda->cordC_y=185
+                #cordC_x += x_speed #Izquierda->cordC_x=405-60
+                #cordC_y += y_speed #Izquierda->cordC_y=185
                 #screen.blit(bloque_Mov,[cord_x+x_speed,cordC_y+y_speed,50,50])
-                screen.blit(personaje,[cord_x,cord_y,50,50])
-                if x_speed == -60:
+                #screen.blit(personaje,[cord_x,cord_y,50,50])->No es necesario colocarlo aqui
+                if x_speed == -60: #Izquirda
                     tablero[y][x]=1
                     tablero[y][x-1]=2
-                elif y_speed == 60:
+                    
+                elif y_speed == 60: #Abajo
                     tablero[y][x]=1
                     tablero[y+1][x]=2
-                elif y_speed == -60:
+                elif y_speed == -60: #Arriba
                     tablero[y][x]=1
                     tablero[y-1][x]=2
-                elif x_speed == 60:
+                elif x_speed == 60: #Derecha
                     tablero[y][x]=1
                     tablero[y][x+1]=2
                
@@ -207,12 +206,20 @@ while True:
             cord_y -= y_speed
             print(tablero)
             screen.blit(personaje,[cord_x,cord_y,50,50])
+            
+            #if x_speed == -60: #Izquierda
+            #    if tablero[y][x+1]==2:
+            #        tablero[y][x]=0
+            #        x_1 = 165+60*(x+1)
+            #        y_1 = 65+60*y
+            #        screen.blit(Diamante,[x_1,y_1,50,50])
+                
             #Colocando sonido, cuando el personaje choque en el muro
             #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
             #pygame.mixer.music.play()
             
                        
-    mapaJuego() #Llamamos función del mapa
+    #mapaJuego() #Llamamos función del mapa
     #mov_personaje(cord_x,cord_y,x_speed,y_speed)
     
     #Bloques movibles      
