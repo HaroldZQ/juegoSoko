@@ -1,8 +1,7 @@
-Hola que tal.
-Carpeta de juego Sokoba
+JUEGO SOKOBAN EN PYTHON
 Grupo 4
-Integrantes
-Gian Carlos Chancavilcas Osores
-Raul Bryam Vasquez
-Daniel Cabanillas
-Harold Alessander Jhon Zambrano Quispe
+Integrantes:
+-Gian Carlos Chancavilcas Osores
+-Raul Bryam Vasquez
+-Daniel Cabanillas
+-Harold Alessander Jhon Zambrano Quispe
