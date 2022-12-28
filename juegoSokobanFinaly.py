@@ -67,8 +67,10 @@ Diamante = pygame.transform.scale(Diamante, (50,50))
 #VARIABLES
 #-------------------------------------------------
 #Definimos las coordenadas iniciales del personaje
-x = 5
-y = 1
+#Ya no es necesario, porque creamos una función para ello
+#x = 5
+#y = 1
+
 #Velocidad de personaje
 x_speed = 0
 y_speed = 0
@@ -100,7 +102,19 @@ def jugadorMovible():
             if tablero[y][x]==6: #tablero[fila][columna]
                 x_1 = 165+60*x
                 y_1 = 65+60*y
+                #valory=y #[2]
+                #valorx=x #[2]
                 screen.blit(personaje,[x_1,y_1,50,50]) 
+    #return valorx,valory #[2]
+
+#Función para posición inicial del jugador
+def posicionJugadorInicio():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]==6: #tablero[fila][columna]
+                valory=y
+                valorx=x
+    return valorx,valory
 
 #Función para los diamantes
 def diamante():
@@ -110,7 +124,11 @@ def diamante():
                 x_1 = 165+60*x
                 y_1 = 65+60*y
                 screen.blit(Diamante,[x_1,y_1,50,50])
-#------------------------------------------------------  
+#------------------------------------------------------ 
+# Definiendo valores iniciales del jugador: 
+#x , y = jugadorMovible() #Aplicando códigos [2]
+x , y = posicionJugadorInicio()
+
 #REALIZA JUEGO-BULCE INFINITO
 while True:
     for event in pygame.event.get():
