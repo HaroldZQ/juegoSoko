@@ -48,7 +48,7 @@ background = pygame.image.load("Imagenes/fotoFondo.jpg").convert()
 
 #Imagenes de elementos del juego
 bloque = pygame.image.load("Imagenes/Ladrillo.jpeg")
-personaje = pygame.image.load("Imagenes/Personaje1.jpeg")
+personaje = pygame.image.load("Imagenes/Personaje1.jpeg").convert_alpha()
 bloque_Mov = pygame.image.load("Imagenes/LadrilloMovible.png")
 Diamante = pygame.image.load("Imagenes/Diamante.jpeg")
 #Icono y titulo para la ventana(Esquina superior)
@@ -58,6 +58,8 @@ pygame.display.set_caption("Sokoban")
 #Imagenes de elementos del juego transformadas a deternida escala
 bloque = pygame.transform.scale(bloque, (50,50))
 personaje = pygame.transform.scale(personaje, (50,50))
+#personaje =pygame.Surface((50,50))
+#personaje = personaje.get_rect()
 bloque_Mov = pygame.transform.scale(bloque_Mov, (50,50))
 Diamante = pygame.transform.scale(Diamante, (50,50))
 #-----------------------------------------------------
@@ -188,20 +190,24 @@ while True:
                 #screen.blit(bloque_Mov,[cord_x+x_speed,cordC_y+y_speed,50,50])
                 #screen.blit(personaje,[cord_x,cord_y,50,50])->No es necesario colocarlo aqui
                 if x_speed == -60: #Izquirda
-                    tablero[y][x]=1
-                    tablero[y][x-1]=2
+                    if tablero[y][x-1]!=0:
+                        tablero[y][x]=1
+                        tablero[y][x-1]=2
                     
                 elif y_speed == 60: #Abajo
-                    tablero[y][x]=1
-                    tablero[y+1][x]=2
+                    if tablero[y+1][x]!=0:
+                        tablero[y][x]=1
+                        tablero[y+1][x]=2
                 elif y_speed == -60: #Arriba
-                    tablero[y][x]=1
-                    tablero[y-1][x]=2
+                    if tablero[y-1][x]!=0:
+                        tablero[y][x]=1
+                        tablero[y-1][x]=2
                 elif x_speed == 60: #Derecha
-                    tablero[y][x]=1
-                    tablero[y][x+1]=2
+                    if tablero[y][x+1]!=0:
+                        tablero[y][x]=1
+                        tablero[y][x+1]=2
                
-        else:
+        elif tablero[y][x]==0:
             cord_x -= x_speed
             cord_y -= y_speed
             print(tablero)
