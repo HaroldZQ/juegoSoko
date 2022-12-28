@@ -285,8 +285,7 @@ while True:
             #Colocando sonido, cuando el personaje choque en el muro
             #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
             #pygame.mixer.music.play()
-            
-                       
+                                 
     #mapaJuego() #Llamamos función del mapa
     #Jugador Movible
     jugadorMovible()
