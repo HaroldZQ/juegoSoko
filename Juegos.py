@@ -32,9 +32,11 @@ def sokoban():
 
 
     # Para la música-CORRECTO
-    pygame.mixer.music.load("Musica/S.mario-bros.mp3")
-    pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(1)
+    #pygame.mixer.music.load("Musica/S.mario-bros.mp3")
+    #pygame.mixer.music.play(-1)
+    #pygame.mixer.music.set_volume(1)
+    sonidoFondo=pygame.mixer.Sound("Musica/S.mario-bros.mp3")
+    sonidoFondo.play()
     # ----------------------------------------
 
     # Definimos colores-Por se acaso
@@ -50,7 +52,7 @@ def sokoban():
     #Etiqueta
     fuente1 = pygame.font.SysFont("Arial",34,True,False)
     info = fuente1.render("CONTADOR",0,GREEN)
-    salir = False
+    #salir = False
     
     # Creamos ventana
     screen = pygame.display.set_mode(size)
@@ -167,7 +169,7 @@ def sokoban():
 # Definiendo valores iniciales del jugador: 
 #x , y = jugadorMovible() #Aplicando códigos [2]
     x , y = posicionJugadorInicio()
-
+    
 
     # ------------------------------------------------------
     # REALIZA JUEGO-BULCE INFINITO
@@ -205,12 +207,13 @@ def sokoban():
         # Color de fondo
         screen.blit(background, [-10, -10])
         
-        #etiqueta contador
+        #etiqueta contador      
         screen.blit(info,(5,5))
         segundos =int(pygame.time.get_ticks()/1000)
         segundos = str(segundos)
         contador = fuente1.render(segundos,0,GREEN)
         screen.blit(contador,(300,5))
+
         mapaJuego()
         # Para mover personaje,cajas
         x += x_speed
@@ -388,10 +391,10 @@ while run:
     draw_text("PRESIONE 'EXIT' PARA SALIR ",font1,TEXT_COL,180,200)
 
     if start_button.draw(pantalla):
-        print('START')
+        #print('START')
         sokoban()
     if exit_button.draw(pantalla):
-        print('EXIT')
+        #print('EXIT')
         run = False
     pygame.display.flip()
     # Controlador de eventos
