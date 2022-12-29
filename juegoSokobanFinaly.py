@@ -39,8 +39,8 @@ BLUE = (0,0,255)
 size = (800,600)#Largo x ancho
 #Etiqueta
 #------------------------------------------------
-fuente1 = pygame.font.SysFont("Arial",34,True,False)
-info = fuente1.render("CONTADOR",0,GREEN)
+fuente1 = pygame.font.SysFont("Arial",28,True,False)
+info = fuente1.render("TIME:",0,GREEN)
 salir = False
 #-------------------------------------
 
@@ -193,12 +193,12 @@ while True:
     segundos =int(pygame.time.get_ticks()/1000)
     segundos = str(segundos)
     contador = fuente1.render(segundos,0,GREEN)
-    screen.blit(contador,(300,5))
+    screen.blit(contador,(150,5))
 
     mapaJuego() 
     #Para mover personaje,cajas
-    x += x_speed
-    y += y_speed
+    x += x_speed #x=x+ x_speed
+    y += y_speed #y=y+ y_speed
     if x_speed == -1: #Izquierda
         if tablero[y][x]!=0:
             if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
