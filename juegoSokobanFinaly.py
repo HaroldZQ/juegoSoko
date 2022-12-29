@@ -37,6 +37,12 @@ BLUE = (0,0,255)
 
 #Caracteristica de la ventana
 size = (800,600)#Largo x ancho
+#Etiqueta
+#------------------------------------------------
+fuente1 = pygame.font.SysFont("Arial",34,True,False)
+info = fuente1.render("CONTADOR",0,GREEN)
+salir = False
+#-------------------------------------
 
 #Creamos ventana
 screen = pygame.display.set_mode(size)
@@ -181,6 +187,13 @@ while True:
 
     #Color de fondo
     screen.blit(background,[-10,-10])
+
+    #Etiqueta contador
+    screen.blit(info,(5,5))
+    segundos =int(pygame.time.get_ticks()/1000)
+    segundos = str(segundos)
+    contador = fuente1.render(segundos,0,GREEN)
+    screen.blit(contador,(300,5))
 
     mapaJuego() 
     #Para mover personaje,cajas
