@@ -24,6 +24,7 @@ def makeSound(filename):
 pygame.mixer.music.load("Música y Sonido/S.mario-bros.mp3")
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(1)
+
 #----------------------------------------
 
 #Definimos colores-Por se acaso
@@ -128,6 +129,16 @@ def diamante():
 def sonidoChoqueLadrillo():
     sonidoChoque=pygame.mixer.Sound("Música y Sonido/SaltosoMovi.mpeg")
     sonidoChoque.play()
+
+def musicaVictoriaJuego():
+    num=0
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]!=5: #tablero[fila][columna]
+                num=num+1               
+    if num==64:        
+        musicaVictoria=pygame.mixer.Sound("Música y Sonido/GanarJuego.mpeg")
+        musicaVictoria.play()
 #------------------------------------------------------ 
 # Definiendo valores iniciales del jugador: 
 #x , y = jugadorMovible() #Aplicando códigos [2]
@@ -312,6 +323,8 @@ while True:
 
     #Diamantes
     diamante()
+    #Sonido de Ganar-Cuando no hay diamantes(5)
+    #musicaVictoriaJuego()
     #Actualizar pantalla
     pygame.display.flip()
     
