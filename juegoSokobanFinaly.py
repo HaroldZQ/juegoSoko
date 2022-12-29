@@ -124,6 +124,10 @@ def diamante():
                 x_1 = 165+60*x
                 y_1 = 65+60*y
                 screen.blit(Diamante,[x_1,y_1,50,50])
+#Funciones Sonidos
+def sonidoChoqueLadrillo():
+    sonidoChoque=pygame.mixer.Sound("Música y Sonido/SaltosoMovi.mpeg")
+    sonidoChoque.play()
 #------------------------------------------------------ 
 # Definiendo valores iniciales del jugador: 
 #x , y = jugadorMovible() #Aplicando códigos [2]
@@ -164,7 +168,7 @@ while True:
 
     #Color de fondo
     screen.blit(background,[-10,-10])
-    
+
     mapaJuego() 
     #Para mover personaje,cajas
     x += x_speed
@@ -185,17 +189,21 @@ while True:
                         tablero[y][x+1]=6
                         tablero[y][x-1]=2 
                         x=x+1
+                        sonidoChoqueLadrillo()
 
-                else:
+                else:#Cuando choque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y][x+1]=6
                     x =x+1
+                    sonidoChoqueLadrillo()
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
         else:
             x -= x_speed
             y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
                                  
     elif y_speed == 1: #Abajo
         if tablero[y][x]!=0:
@@ -213,17 +221,21 @@ while True:
                         tablero[y-1][x]=6
                         tablero[y+1][x]=2
                         y=y-1
+                        sonidoChoqueLadrillo()
 
-                else:
+                else:#Cuando choque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y-1][x]=6
                     y =y-1
+                    sonidoChoqueLadrillo()
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
         else:
             x -= x_speed
             y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
         
     elif y_speed == -1: #Arriba
         if tablero[y][x]!=0:
@@ -241,17 +253,21 @@ while True:
                         tablero[y+1][x]=6
                         tablero[y-1][x]=2
                         y=y+1
+                        sonidoChoqueLadrillo()
 
-                else:
+                else:#Cuando choque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y+1][x]=6
                     y =y+1
+                    sonidoChoqueLadrillo()
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
         else:
             x -= x_speed
             y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
         
     elif x_speed == 1: #Derecha
         if tablero[y][x]!=0:
@@ -269,22 +285,24 @@ while True:
                         tablero[y][x-1]=6
                         tablero[y][x+1]=2 
                         x=x-1
-                else:
+                        sonidoChoqueLadrillo()
+                else:#Cuando choque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y][x-1]=6
                     x =x-1
+                    sonidoChoqueLadrillo()
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed                    
         else:
             x -= x_speed
             y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
     #Para monitoriar juego:
     print(tablero)
     print(x,y)
-            #Colocando sonido, cuando el personaje choque en el muro
-            #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
-            #pygame.mixer.music.play()
+
                                  
     #mapaJuego() #Llamamos función del mapa
     #Jugador Movible
