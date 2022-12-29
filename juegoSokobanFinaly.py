@@ -3,12 +3,12 @@ import numpy as np
 
 pygame.init()
 tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tablero[0][0]
-                   ,[0,0,0,0,1,1,0,0]   #En 0 se encuentran las cajas
-                   ,[0,0,1,1,2,1,0,0]   #En 1,2,3 y 4 se desplaza el personaje
-                   ,[0,0,1,0,1,0,1,0]   #En 2,3,4 se encuentran los bloques movibles
-                   ,[0,1,1,0,1,0,1,0]
-                   ,[0,1,0,1,1,4,1,0]
-                   ,[0,1,3,1,1,1,1,0]
+                   ,[0,0,0,0,1,6,0,0]   #En 0 se encuentran las cajas
+                   ,[0,0,1,1,2,1,0,0]   #En >=1 se desplaza el personaje
+                   ,[0,0,1,0,1,0,0,0]   #En 2 se encuentran los bloques movibles
+                   ,[0,1,1,0,1,0,5,0]   #En 5 se encuentran los diamantes
+                   ,[0,1,0,1,1,2,5,0]   #En 6 se encuentran el personaje
+                   ,[0,1,2,1,1,1,5,0]
                    ,[0,0,0,0,0,0,0,0]])
 
 #MÚSICA
@@ -21,9 +21,11 @@ def makeSound(filename):
     return Sonido
 
 #Para la música-CORRECTO
-pygame.mixer.music.load("Música y Sonido/S.mario-bros.mp3")
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(1)
+#pygame.mixer.music.load("Música y Sonido/S.mario-bros.mp3")
+#pygame.mixer.music.play(-1)
+#pygame.mixer.music.set_volume(1)
+sonidoFondo=pygame.mixer.Sound("Música y Sonido/S.mario-bros.mp3")
+sonidoFondo.play(-1)
 #----------------------------------------
 
 #Definimos colores-Por se acaso
@@ -35,6 +37,12 @@ BLUE = (0,0,255)
 
 #Caracteristica de la ventana
 size = (800,600)#Largo x ancho
+#Etiqueta
+#------------------------------------------------
+fuente1 = pygame.font.SysFont("Arial",34,True,False)
+info = fuente1.render("CONTADOR",0,GREEN)
+salir = False
+#-------------------------------------
 
 #Creamos ventana
 screen = pygame.display.set_mode(size)
@@ -48,7 +56,9 @@ background = pygame.image.load("Imagenes/fotoFondo.jpg").convert()
 
 #Imagenes de elementos del juego
 bloque = pygame.image.load("Imagenes/Ladrillo.jpeg")
-personaje = pygame.image.load("Imagenes/Personaje1.jpeg")
+personaje = pygame.image.load("Imagenes/Personaje1.jpeg").convert_alpha()
+bloque_Mov = pygame.image.load("Imagenes/LadrilloMovible.png")
+Diamante = pygame.image.load("Imagenes/Diamante.jpeg")
 #Icono y titulo para la ventana(Esquina superior)
 pygame.display.set_icon(personaje)
 pygame.display.set_caption("Sokoban")
@@ -56,13 +66,19 @@ pygame.display.set_caption("Sokoban")
 #Imagenes de elementos del juego transformadas a deternida escala
 bloque = pygame.transform.scale(bloque, (50,50))
 personaje = pygame.transform.scale(personaje, (50,50))
+#personaje =pygame.Surface((50,50))
+#personaje = personaje.get_rect()
+bloque_Mov = pygame.transform.scale(bloque_Mov, (50,50))
+Diamante = pygame.transform.scale(Diamante, (50,50))
 #-----------------------------------------------------
 
 #VARIABLES
 #-------------------------------------------------
 #Definimos las coordenadas iniciales del personaje
-cord_x = 465
-cord_y = 125
+#Ya no es necesario, porque creamos una función para ello
+#x = 5
+#y = 1
+
 #Velocidad de personaje
 x_speed = 0
 y_speed = 0
@@ -79,31 +95,62 @@ def mapaJuego():
                 y_1 = 65+60*y
                 screen.blit(bloque,[x_1,y_1,50,50])
                 
-
-#Funcion de mapa movilidad-EN PRUEBA
-def pos_inicial():
+#Función para los bloques movibles
+def bloqueMovible():
     for x in range(0,8): #x:columna
         for y in range(0,8): #y:fila
-            if tablero[y][x]>=1: #tablero[fila][columna]
-                #cord_x = 465  
-                #cord_y = 125
-                screen.blit(personaje,[cord_x,cord_y,50,50])
+            if tablero[y][x]==2: #tablero[fila][columna]
+                x_1 = 165+60*x
+                y_1 = 65+60*y
+                screen.blit(bloque_Mov,[x_1,y_1,50,50])
+#Función para jugador
+def jugadorMovible():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]==6: #tablero[fila][columna]
+                x_1 = 165+60*x
+                y_1 = 65+60*y
+                #valory=y #[2]
+                #valorx=x #[2]
+                screen.blit(personaje,[x_1,y_1,50,50]) 
+    #return valorx,valory #[2]
 
-#[1]Funcion de mapa movilidad-EN PRUEBA-BUSCAR SOLUCIÓN
-def mov_personaje(cordx,cordy,xspeed,yspeed):
-    if (165<=cordx and cordx<=585)and(65<=cordy and cordy<=485): 
-        cordx += xspeed
-        cordy += yspeed
-        x = int((cordx-165)/60)
-        y = int((cordy-65)/60)
-        print(x,y)
-        if tablero[y][x]>=1:
-            screen.blit(personaje,[cordx,cordy,50,50])
-        else:
-            cordx -= xspeed
-            cordy -= yspeed
-            screen.blit(personaje,[cordx,cordy,50,50])
-#------------------------------------------------------    
+#Función para posición inicial del jugador
+def posicionJugadorInicio():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]==6: #tablero[fila][columna]
+                valory=y
+                valorx=x
+    return valorx,valory
+
+#Función para los diamantes
+def diamante():
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]==5: #tablero[fila][columna]
+                x_1 = 165+60*x
+                y_1 = 65+60*y
+                screen.blit(Diamante,[x_1,y_1,50,50])
+#Funciones Sonidos
+def sonidoChoqueLadrillo():
+    sonidoChoque=pygame.mixer.Sound("Música y Sonido/SaltosoMovi.mpeg")
+    sonidoChoque.play()
+
+def musicaVictoriaJuego():
+    num=0
+    for x in range(0,8): #x:columna
+        for y in range(0,8): #y:fila
+            if tablero[y][x]!=5: #tablero[fila][columna]
+                num=num+1               
+    if num==64:        
+        musicaVictoria=pygame.mixer.Sound("Música y Sonido/Puntoextra.mpeg")
+        musicaVictoria.play(-1)
+        sonidoFondo.stop()
+#------------------------------------------------------ 
+# Definiendo valores iniciales del jugador: 
+#x , y = jugadorMovible() #Aplicando códigos [2]
+x , y = posicionJugadorInicio()
 
 #REALIZA JUEGO-BULCE INFINITO
 while True:
@@ -113,53 +160,188 @@ while True:
          #Evento teclado
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                x_speed = -60
+                x_speed = -1               
+
             if event.key == pygame.K_RIGHT:
-                x_speed =60
+                x_speed =1
+
             if event.key == pygame.K_UP:
-                y_speed = -60
+                y_speed = -1
+
             if event.key == pygame.K_DOWN:
-                y_speed = 60
+                y_speed = 1
             
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 x_speed = 0
+
             if event.key == pygame.K_RIGHT:
                 x_speed = 0
+
             if event.key == pygame.K_UP:
                 y_speed = 0
+
             if event.key == pygame.K_DOWN:
                 y_speed = 0
 
 
     #Color de fondo
     screen.blit(background,[-10,-10])
-    #Para mover personaje-CONVERTIRLO EN UNA FUNCIÓN[1]
-    if (165<=cord_x and cord_x<=585)and(65<=cord_y and cord_y<=485):
-        cord_x += x_speed
-        cord_y += y_speed
-        x = int((cord_x-165)/60)
-        y = int((cord_y-65)/60)
-        print(x,y) #Para ver coordenada de la M.Bidimensional
-        if tablero[y][x]>=1:
-            screen.blit(personaje,[cord_x,cord_y,50,50])
+
+    #Etiqueta contador
+    screen.blit(info,(5,5))
+    segundos =int(pygame.time.get_ticks()/1000)
+    segundos = str(segundos)
+    contador = fuente1.render(segundos,0,GREEN)
+    screen.blit(contador,(300,5))
+
+    mapaJuego() 
+    #Para mover personaje,cajas
+    x += x_speed
+    y += y_speed
+    if x_speed == -1: #Izquierda
+        if tablero[y][x]!=0:
+            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+                tablero[y][x]=6
+                tablero[y][x+1]=1
+            elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
+                if tablero[y][x-1]!=0:
+                    if tablero[y][x-1]!=2:
+                        tablero[y][x-1]=2
+                        tablero[y][x]=6
+                        tablero[y][x+1]=1
+                    else:#Caso,cuando se chocan 2 bloques movibles
+                        tablero[y][x]=2
+                        tablero[y][x+1]=6
+                        tablero[y][x-1]=2 
+                        x=x+1
+                        sonidoChoqueLadrillo()
+
+                else:#Cuando choque movible choca en la pared
+                    tablero[y][x]=2
+                    tablero[y][x+1]=6
+                    x =x+1
+                    sonidoChoqueLadrillo()
+                    #O tambien podemos colocar:
+                    #x -= x_speed
+                    #y -= y_speed
         else:
-            cord_x -= x_speed
-            cord_y -= y_speed
-            screen.blit(personaje,[cord_x,cord_y,50,50])
-            #Colcocando sonido, cuando el personaje choque en el muro
-            #pygame.mixer.music.load("Música y Sonido/SaltosoMovi.mpeg")
-            #pygame.mixer.music.play()
-            
-            
-            
+            x -= x_speed
+            y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
+                                 
+    elif y_speed == 1: #Abajo
+        if tablero[y][x]!=0:
+            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+                tablero[y][x]=6
+                tablero[y-1][x]=1
+            elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
+                if tablero[y+1][x]!=0:
+                    if tablero[y+1][x]!=2:
+                        tablero[y+1][x]=2
+                        tablero[y][x]=6
+                        tablero[y-1][x]=1
+                    else:#Caso,cuando se chocan 2 bloques movibles
+                        tablero[y][x]=2
+                        tablero[y-1][x]=6
+                        tablero[y+1][x]=2
+                        y=y-1
+                        sonidoChoqueLadrillo()
 
-    mapaJuego() #Llamamos función del mapa
-    #mov_personaje(cord_x,cord_y,x_speed,y_speed)
+                else:#Cuando choque movible choca en la pared
+                    tablero[y][x]=2
+                    tablero[y-1][x]=6
+                    y =y-1
+                    sonidoChoqueLadrillo()
+                    #O tambien podemos colocar:
+                    #x -= x_speed
+                    #y -= y_speed
+        else:
+            x -= x_speed
+            y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
+        
+    elif y_speed == -1: #Arriba
+        if tablero[y][x]!=0:
+            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+                tablero[y][x]=6
+                tablero[y+1][x]=1
+            elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
+                if tablero[y-1][x]!=0:
+                    if tablero[y-1][x]!=2:
+                        tablero[y-1][x]=2
+                        tablero[y][x]=6
+                        tablero[y+1][x]=1
+                    else:#Caso,cuando se chocan 2 bloques movibles
+                        tablero[y][x]=2
+                        tablero[y+1][x]=6
+                        tablero[y-1][x]=2
+                        y=y+1
+                        sonidoChoqueLadrillo()
 
+                else:#Cuando choque movible choca en la pared
+                    tablero[y][x]=2
+                    tablero[y+1][x]=6
+                    y =y+1
+                    sonidoChoqueLadrillo()
+                    #O tambien podemos colocar:
+                    #x -= x_speed
+                    #y -= y_speed
+        else:
+            x -= x_speed
+            y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
+        
+    elif x_speed == 1: #Derecha
+        if tablero[y][x]!=0:
+            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+                tablero[y][x]=6
+                tablero[y][x-1]=1
+            elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
+                if tablero[y][x+1]!=0:
+                    if tablero[y][x+1]!=2:
+                        tablero[y][x+1]=2
+                        tablero[y][x]=6
+                        tablero[y][x-1]=1 
+                    else:#Caso,cuando se chocan 2 bloques movibles
+                        tablero[y][x]=2
+                        tablero[y][x-1]=6
+                        tablero[y][x+1]=2 
+                        x=x-1
+                        sonidoChoqueLadrillo()
+                else:#Cuando choque movible choca en la pared
+                    tablero[y][x]=2
+                    tablero[y][x-1]=6
+                    x =x-1
+                    sonidoChoqueLadrillo()
+                    #O tambien podemos colocar:
+                    #x -= x_speed
+                    #y -= y_speed                    
+        else:
+            x -= x_speed
+            y -= y_speed
+            #Colocando sonido, cuando el personaje choque en el muro
+            sonidoChoqueLadrillo()
+    #Para monitoriar juego:
+    print(tablero)
+    print(x,y)
+
+                                 
+    #mapaJuego() #Llamamos función del mapa
+    #Jugador Movible
+    jugadorMovible()
+    #Bloques movibles      
+    bloqueMovible()
+
+    #Diamantes
+    diamante()
+    #Sonido de Ganar-Cuando no hay diamantes(5)
+    #musicaVictoriaJuego()
     #Actualizar pantalla
     pygame.display.flip()
     
     #Para la rapidez de movilidad del jugador
-    clock.tick(6)#Con valor 6, funciona bien.Probar con otros valores 
-    
+    clock.tick(6)#Con valor 6, funciona bien.Probar con otros valores
