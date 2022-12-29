@@ -21,10 +21,11 @@ def makeSound(filename):
     return Sonido
 
 #Para la música-CORRECTO
-pygame.mixer.music.load("Música y Sonido/S.mario-bros.mp3")
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(1)
-
+#pygame.mixer.music.load("Música y Sonido/S.mario-bros.mp3")
+#pygame.mixer.music.play(-1)
+#pygame.mixer.music.set_volume(1)
+sonidoFondo=pygame.mixer.Sound("Música y Sonido/S.mario-bros.mp3")
+sonidoFondo.play(-1)
 #----------------------------------------
 
 #Definimos colores-Por se acaso
@@ -137,8 +138,9 @@ def musicaVictoriaJuego():
             if tablero[y][x]!=5: #tablero[fila][columna]
                 num=num+1               
     if num==64:        
-        musicaVictoria=pygame.mixer.Sound("Música y Sonido/GanarJuego.mpeg")
-        musicaVictoria.play()
+        musicaVictoria=pygame.mixer.Sound("Música y Sonido/Puntoextra.mpeg")
+        musicaVictoria.play(-1)
+        sonidoFondo.stop()
 #------------------------------------------------------ 
 # Definiendo valores iniciales del jugador: 
 #x , y = jugadorMovible() #Aplicando códigos [2]
