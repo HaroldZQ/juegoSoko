@@ -5,3 +5,17 @@ Integrantes:
 -Raul Bryam Vasquez
 -Daniel Cabanillas
 -Harold Alessander Jhon Zambrano Quispe
+
+Códigos:
+Juego Sokoban sin Ventana:
+-juegoSokobanFinaly.py
+-juegoRecolectorDiamantes.py
+Son lo mismo
+
+Juego Sokoban con ventana:
+-Ejecutar primero archivo: button.py
+-Luego archivo: juegos.py
+
+Observación: Si quiere modificar imagenes o sonidos del juego
+coloque el nombre sus archivos con extensiones .png, .jpeg u otras,
+en la sentencia correspondiente del código.
