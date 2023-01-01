@@ -5,10 +5,10 @@ pygame.init()
 tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tablero[0][0]
                    ,[0,0,0,0,1,6,0,0]   #En 0 se encuentran las cajas
                    ,[0,0,1,1,2,1,0,0]   #En >=1 se desplaza el personaje
-                   ,[0,0,1,0,1,0,0,0]   #En 2 se encuentran los bloques movibles
-                   ,[0,1,1,0,1,0,5,0]   #En 5 se encuentran los diamantes
+                   ,[0,0,1,0,5,0,0,0]   #En 2 se encuentran los bloques movibles
+                   ,[0,1,1,0,5,0,5,0]   #En 5 se encuentran los diamantes
                    ,[0,1,0,1,1,2,5,0]   #En 6 se encuentran el personaje
-                   ,[0,1,2,1,1,1,5,0]
+                   ,[0,1,1,5,5,1,1,0]
                    ,[0,0,0,0,0,0,0,0]])
 
 #MÚSICA
@@ -39,8 +39,8 @@ BLUE = (0,0,255)
 size = (800,600)#Largo x ancho
 #Etiqueta
 #------------------------------------------------
-fuente1 = pygame.font.SysFont("Arial",34,True,False)
-info = fuente1.render("CONTADOR",0,GREEN)
+fuente1 = pygame.font.SysFont("Arial",28,True,False)
+info = fuente1.render("TIME:",0,GREEN)
 salir = False
 #-------------------------------------
 
@@ -151,7 +151,11 @@ def musicaVictoriaJuego():
 # Definiendo valores iniciales del jugador: 
 #x , y = jugadorMovible() #Aplicando códigos [2]
 x , y = posicionJugadorInicio()
-
+#Definimos variable general-Detecto de elemento 5, en nuestra matriz Tablero
+detectorElem5=0      
+detector2Elem5=0
+detector2Parte2Elem5=0
+detector2Parte3Elem5=0
 #REALIZA JUEGO-BULCE INFINITO
 while True:
     for event in pygame.event.get():
@@ -193,23 +197,42 @@ while True:
     segundos =int(pygame.time.get_ticks()/1000)
     segundos = str(segundos)
     contador = fuente1.render(segundos,0,GREEN)
-    screen.blit(contador,(300,5))
+    screen.blit(contador,(150,5))
 
     mapaJuego() 
     #Para mover personaje,cajas
-    x += x_speed
-    y += y_speed
+    x += x_speed #x=x+ x_speed
+    y += y_speed #y=y+ y_speed
     if x_speed == -1: #Izquierda
         if tablero[y][x]!=0:
-            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+            if tablero[y][x]==1: #Para mover por 1 (Espacios vacios)
                 tablero[y][x]=6
-                tablero[y][x+1]=1
+                if detectorElem5!=1:
+                    tablero[y][x+1]=1
+                else:#Cuando el jugador se encontraba en el diamante
+                    tablero[y][x+1]=5
+                    detectorElem5=0 #Volvemos a colocar valor 0
             elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
-                if tablero[y][x-1]!=0:
+                if detector2Elem5==1:
+                    detector2Parte2Elem5=1
+                if tablero[y][x-1]!=0:#Cuando bloque movible no choca en la pared
                     if tablero[y][x-1]!=2:
+                        if tablero[y][x-1]==5:
+                            detector2Elem5=1
                         tablero[y][x-1]=2
                         tablero[y][x]=6
-                        tablero[y][x+1]=1
+                        if detector2Parte2Elem5!=1:
+                            tablero[y][x+1]=1
+                        else:
+                            if detector2Parte3Elem5!=1:
+                                tablero[y][x+1]=1
+                            else:
+                                tablero[y][x+1]=5
+                                detector2Elem5=0
+                                detector2Parte2Elem5=0
+                                detector2Parte3Elem5=0
+                            detector2Parte3Elem5=1
+
                     else:#Caso,cuando se chocan 2 bloques movibles
                         tablero[y][x]=2
                         tablero[y][x+1]=6
@@ -217,7 +240,7 @@ while True:
                         x=x+1
                         sonidoChoqueLadrillo()
 
-                else:#Cuando choque movible choca en la pared
+                else:#Cuando bloque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y][x+1]=6
                     x =x+1
@@ -225,6 +248,14 @@ while True:
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
+            elif tablero[y][x]==5: #Para mover por 5(Los diamantes)
+                tablero[y][x]=6
+                if detectorElem5 != 1:
+                    tablero[y][x+1]=1
+                else: #Caso dos diamantes juntos
+                    tablero[y][x+1]=5    
+                    detectorElem5=0
+                detectorElem5=1 #Para detectar que estuvimos en 5(Diamante)          
         else:
             x -= x_speed
             y -= y_speed
@@ -233,15 +264,34 @@ while True:
                                  
     elif y_speed == 1: #Abajo
         if tablero[y][x]!=0:
-            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+            if tablero[y][x]==1: #Para mover por 1 (Espacios vacios)
                 tablero[y][x]=6
-                tablero[y-1][x]=1
+                if detectorElem5!=1:
+                    tablero[y-1][x]=1
+                else:
+                    tablero[y-1][x]=5
+                    detectorElem5=0 #Volvemos a colocar valor 0
             elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
-                if tablero[y+1][x]!=0:
+                if detector2Elem5==1:
+                    detector2Parte2Elem5=1
+                if tablero[y+1][x]!=0:#Cuando bloque movible no choca en la pared
                     if tablero[y+1][x]!=2:
+                        if tablero[y+1][x]==5:
+                            detector2Elem5=1
                         tablero[y+1][x]=2
                         tablero[y][x]=6
-                        tablero[y-1][x]=1
+                        #tablero[y-1][x]=1
+                        if detector2Parte2Elem5!=1:
+                            tablero[y-1][x]=1
+                        else:
+                            if detector2Parte3Elem5!=1:
+                                tablero[y-1][x]=1
+                            else:
+                                tablero[y-1][x]=5
+                                detector2Elem5=0
+                                detector2Parte2Elem5=0
+                                detector2Parte3Elem5=0
+                            detector2Parte3Elem5=1
                     else:#Caso,cuando se chocan 2 bloques movibles
                         tablero[y][x]=2
                         tablero[y-1][x]=6
@@ -249,7 +299,7 @@ while True:
                         y=y-1
                         sonidoChoqueLadrillo()
 
-                else:#Cuando choque movible choca en la pared
+                else:#Cuando bloque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y-1][x]=6
                     y =y-1
@@ -257,6 +307,14 @@ while True:
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
+            elif tablero[y][x]==5: #Para mover por 5(Los diamantes)
+                tablero[y][x]=6
+                if detectorElem5 != 1:
+                    tablero[y-1][x]=1
+                else: #Caso dos diamantes juntos
+                    tablero[y-1][x]=5    
+                    detectorElem5=0
+                detectorElem5=1 #Para detectar que estuvimos en 5(Diamante)  
         else:
             x -= x_speed
             y -= y_speed
@@ -265,15 +323,34 @@ while True:
         
     elif y_speed == -1: #Arriba
         if tablero[y][x]!=0:
-            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
+            if tablero[y][x]==1: #Para mover por 1(Espacios vacios)
                 tablero[y][x]=6
-                tablero[y+1][x]=1
+                if detectorElem5!=1:
+                    tablero[y+1][x]=1
+                else:
+                    tablero[y+1][x]=5
+                    detectorElem5=0 #Volvemos a colocar valor 0
             elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
-                if tablero[y-1][x]!=0:
+                if detector2Elem5==1:
+                    detector2Parte2Elem5=1
+                if tablero[y-1][x]!=0:#Cuando bloque movible no choca en la pared
                     if tablero[y-1][x]!=2:
+                        if tablero[y-1][x]==5:
+                            detector2Elem5=1
                         tablero[y-1][x]=2
                         tablero[y][x]=6
-                        tablero[y+1][x]=1
+                        #tablero[y+1][x]=1
+                        if detector2Parte2Elem5!=1:
+                            tablero[y+1][x]=1
+                        else:
+                            if detector2Parte3Elem5!=1:
+                                tablero[y+1][x]=1
+                            else:
+                                tablero[y+1][x]=5
+                                detector2Elem5=0
+                                detector2Parte2Elem5=0
+                                detector2Parte3Elem5=0
+                            detector2Parte3Elem5=1
                     else:#Caso,cuando se chocan 2 bloques movibles
                         tablero[y][x]=2
                         tablero[y+1][x]=6
@@ -281,7 +358,7 @@ while True:
                         y=y+1
                         sonidoChoqueLadrillo()
 
-                else:#Cuando choque movible choca en la pared
+                else:#Cuando bloque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y+1][x]=6
                     y =y+1
@@ -289,6 +366,14 @@ while True:
                     #O tambien podemos colocar:
                     #x -= x_speed
                     #y -= y_speed
+            elif tablero[y][x]==5: #Para mover por 5(Los diamantes)
+                tablero[y][x]=6
+                if detectorElem5 != 1:
+                    tablero[y+1][x]=1
+                else: #Caso dos diamantes juntos
+                    tablero[y+1][x]=5    
+                    detectorElem5=0
+                detectorElem5=1  #Para detectar que estuvimos en 5(Diamante)   
         else:
             x -= x_speed
             y -= y_speed
@@ -297,38 +382,86 @@ while True:
         
     elif x_speed == 1: #Derecha
         if tablero[y][x]!=0:
-            if tablero[y][x]==1 or tablero[y][x]==5: #Para mover por 1y5(Los diamantes)
-                tablero[y][x]=6
-                tablero[y][x-1]=1
+            if tablero[y][x]==1: #Para mover por 1(Espacios vacios)
+                tablero[y][x]=6              
+                if detectorElem5!=1:
+                    tablero[y][x-1]=1
+                else:
+                    tablero[y][x-1]=5
+                    detectorElem5=0 #Volvemos a colocar valor 0
             elif tablero[y][x]==2: #Para mover bloque(Estamos en 2)
-                if tablero[y][x+1]!=0:
+                if detector2Elem5==1:
+                    detector2Parte2Elem5=1
+
+                if tablero[y][x+1]!=0:#Cuando bloque movible no choca en la pared
                     if tablero[y][x+1]!=2:
+                        if tablero[y][x+1]==5:
+                            detector2Elem5=1
+
                         tablero[y][x+1]=2
                         tablero[y][x]=6
-                        tablero[y][x-1]=1 
+                        if detector2Parte2Elem5!=1:
+                            tablero[y][x-1]=1
+                        else:
+                            if detector2Parte3Elem5!=1:
+                                tablero[y][x-1]=1
+                            else:
+                                tablero[y][x-1]=5
+                                detector2Elem5=0
+                                detector2Parte2Elem5=0
+                                detector2Parte3Elem5=0
+                            detector2Parte3Elem5=1
+
+
                     else:#Caso,cuando se chocan 2 bloques movibles
                         tablero[y][x]=2
                         tablero[y][x-1]=6
                         tablero[y][x+1]=2 
                         x=x-1
                         sonidoChoqueLadrillo()
-                else:#Cuando choque movible choca en la pared
+                    #if tablero[y][x+1]!=2:
+                    #    tablero[y][x+1]=2
+                    #    tablero[y][x]=6
+                    #    tablero[y][x-1]=1 
+                    #else:#Caso,cuando se chocan 2 bloques movibles
+                    #    tablero[y][x]=2
+                    #    tablero[y][x-1]=6
+                    #    tablero[y][x+1]=2 
+                    #    x=x-1
+                    #    sonidoChoqueLadrillo()
+                else:#Cuando bloque movible choca en la pared
                     tablero[y][x]=2
                     tablero[y][x-1]=6
                     x =x-1
                     sonidoChoqueLadrillo()
                     #O tambien podemos colocar:
                     #x -= x_speed
-                    #y -= y_speed                    
+                    #y -= y_speed   
+            elif tablero[y][x]==5: #Para mover por 5(Los diamantes)
+                tablero[y][x]=6
+                if detectorElem5 != 1:
+                    tablero[y][x-1]=1
+                else: #Caso dos diamantes juntos
+                    tablero[y][x-1]=5    
+                    detectorElem5=0
+                detectorElem5=1  #Para detectar que estuvimos en 5(Diamante)
+                
+                #tablero[y][x]=6
+                #tablero[y][x-1]=1
+                #detectorElem5=1               
         else:
             x -= x_speed
             y -= y_speed
             #Colocando sonido, cuando el personaje choque en el muro
             sonidoChoqueLadrillo()
+             
     #Para monitoriar juego:
     print(tablero)
     print(x,y)
-
+    print("Detectamos Caja movible toca diamante: ")
+    print("detector2Elem5: ",detector2Elem5)
+    print("detector2Parte2Elem5: ",detector2Parte2Elem5)
+    print("detector2Parte3Elem5: ",detector2Parte3Elem5)
                                  
     #mapaJuego() #Llamamos función del mapa
     #Jugador Movible

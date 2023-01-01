@@ -4,11 +4,11 @@ import numpy as np
 pygame.init()
 tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tablero[0][0]
                    ,[0,0,0,0,1,6,0,0]   #En 0 se encuentran las cajas
-                   ,[0,0,1,1,2,1,0,0]   #En >=1 se desplaza el personaje
-                   ,[0,0,1,0,1,0,0,0]   #En 2 se encuentran los bloques movibles
-                   ,[0,1,1,0,5,0,5,0]   #En 5 se encuentran los diamantes
-                   ,[0,1,0,1,1,2,5,0]   #En 6 se encuentran el personaje
-                   ,[0,1,1,5,5,1,1,0]
+                   ,[0,0,1,1,1,1,0,0]   #En >=1 se desplaza el personaje
+                   ,[0,0,1,0,5,0,0,0]   #En 2 se encuentran los bloques movibles
+                   ,[0,1,1,0,2,0,5,0]   #En 5 se encuentran los diamantes
+                   ,[0,1,0,1,1,1,5,0]   #En 6 se encuentran el personaje
+                   ,[0,1,1,1,5,2,1,0]
                    ,[0,0,0,0,0,0,0,0]])
 
 #MÚSICA
@@ -282,10 +282,20 @@ while True:
                         tablero[y][x]=6
                         #tablero[y-1][x]=1
                         if detector2Parte2Elem5!=1:
-                            tablero[y-1][x]=1
+                            #tablero[y-1][x]=1
+                            if detectorElem5!=1:
+                                tablero[y-1][x]=1
+                            else:
+                                tablero[y-1][x]=5
+                                detectorElem5=0 #Volvemos a colocar valor 0
                         else:
                             if detector2Parte3Elem5!=1:
-                                tablero[y-1][x]=1
+                                #tablero[y-1][x]=1
+                                if detectorElem5!=1:
+                                    tablero[y-1][x]=1
+                                else:
+                                    tablero[y-1][x]=5
+                                    detectorElem5=0 #Volvemos a colocar valor 0
                             else:
                                 tablero[y-1][x]=5
                                 detector2Elem5=0
@@ -341,10 +351,20 @@ while True:
                         tablero[y][x]=6
                         #tablero[y+1][x]=1
                         if detector2Parte2Elem5!=1:
-                            tablero[y+1][x]=1
+                            #tablero[y+1][x]=1
+                            if detectorElem5!=1:
+                                tablero[y+1][x]=1
+                            else:
+                                tablero[y+1][x]=5
+                                detectorElem5=0 #Volvemos a colocar valor 0
                         else:
                             if detector2Parte3Elem5!=1:
-                                tablero[y+1][x]=1
+                                #tablero[y+1][x]=1
+                                if detectorElem5!=1:
+                                    tablero[y+1][x]=1
+                                else:
+                                    tablero[y+1][x]=5
+                                    detectorElem5=0 #Volvemos a colocar valor 0
                             else:
                                 tablero[y+1][x]=5
                                 detector2Elem5=0
