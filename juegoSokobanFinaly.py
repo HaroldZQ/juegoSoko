@@ -6,8 +6,8 @@ tablero = np.array([[0,0,0,0,0,0,0,0]   #tablero [fila][columna]->inicio: tabler
                    ,[0,0,0,0,1,6,0,0]   #En 0 se encuentran las cajas
                    ,[0,0,1,1,2,1,0,0]   #En >=1 se desplaza el personaje
                    ,[0,0,1,0,1,0,0,0]   #En 2 se encuentran los bloques movibles
-                   ,[0,1,1,0,5,0,1,0]   #En 5 se encuentran los diamantes
-                   ,[0,1,0,1,1,2,5,0]   #En 6 se encuentran el personaje
+                   ,[0,1,1,0,1,0,1,0]   #En 5 se encuentran los diamantes
+                   ,[0,1,0,1,5,1,5,0]   #En 6 se encuentran el personaje
                    ,[0,1,2,1,1,1,5,0]
                    ,[0,0,0,0,0,0,0,0]])
 
