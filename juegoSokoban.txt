@@ -5,3 +5,6 @@ Integrantes:
 -Raul Bryam Vasquez
 -Daniel Cabanillas
 -Harold Alessander Jhon Zambrano Quispe
+
+Version Individual:
+
